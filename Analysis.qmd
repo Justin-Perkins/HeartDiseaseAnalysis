@@ -1,0 +1,28 @@
+---
+title: "Heart Disease Key Indicators"
+author: "Joe Wilder, Justin Perkins"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+format: html
+execute: 
+  echo: false
+  warning: false
+theme: darkly
+---
+
+
+```{r}
+#| label: Reticulate
+
+library(tidyverse)
+library(reticulate)
+use_virtualenv("mat434")
+
+```
+
+```{python}
+#| label: Python Imports
+
+
+
+```
+
