@@ -2,19 +2,24 @@
 title: "Heart Disease Key Indicators"
 author: "Joe Wilder, Justin Perkins"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
-format: html
+format:
+  html:
+    toc: true
+    toc-location: left
+    
+editor: visual
 execute: 
-  echo: false
   warning: false
+  echo: false
 theme: darkly
 ---
-
 
 ```{r}
 #| label: Reticulate
 
 library(tidyverse)
 library(reticulate)
+library(kableExtra)
 use_virtualenv("mat434")
 
 ```
@@ -22,7 +27,166 @@ use_virtualenv("mat434")
 ```{python}
 #| label: Python Imports
 
+import pandas as pd
+import geopandas as gpd
+import contextily as ctx
+import numpy as np
+import geopandas as gpd
+import matplotlib.pyplot as plt
 
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+from sklearn.experimental import enable_halving_search_cv
+from sklearn.model_selection import HalvingGridSearchCV, HalvingRandomSearchCV
+
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer, TfidfVectorizer
+from sklearn.model_selection import train_test_split, cross_val_score, GridSearchCV, RandomizedSearchCV
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.impute import SimpleImputer, KNNImputer
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+from sklearn.metrics import log_loss, confusion_matrix
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.decomposition import SparsePCA
+
+from scipy.stats import randint
+
+from shapely.geometry import Point
+from geopandas.tools import sjoin
+
+from plotnine import *
 
 ```
+
+```{python}
+#| label: Read in Data
+
+heart_data = pd.read_csv("./Data/Heart_Disease_Data.csv")
+
+```
+
+```{python}
+#| label: Read in Column Descriptions
+
+var_list_df = pd.read_csv("./Data/Vars_With_Descriptions.txt", sep=' - ', header=None, names=['Variable', 'Description'])
+
+```
+
+## Background of Dataset
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum. Morbi posuere placerat ipsum, eu accumsan quam pulvinar a. Donec rutrum molestie dolor in maximus. Praesent fringilla enim vel ultricies lacinia. Phasellus at odio ut risus blandit consectetur. Pellentesque erat dui, scelerisque mollis aliquet id, aliquet at odio.
+
+Quisque a libero volutpat, convallis mauris cursus, volutpat purus. Nulla rhoncus eget dolor eget pretium. Maecenas finibus pulvinar rutrum. Nam malesuada malesuada mi sit amet commodo. Praesent sed sollicitudin tellus. Suspendisse ultrices sem ac erat pharetra, id tristique neque molestie. In luctus luctus nisi, id ornare nisl tempor non. In ante lectus, convallis nec sagittis eget, tincidunt fringilla lorem. Maecenas odio metus, hendrerit sit amet ligula a, semper suscipit metus. Nullam cursus urna non est faucibus, nec maximus erat mattis. Cras malesuada tortor laoreet dui viverra, id lacinia sapien finibus. Proin suscipit tortor aliquet urna imperdiet, ut commodo mauris imperdiet. Praesent tristique nunc in arcu hendrerit consequat. Donec quis nisl eget nisi dictum pellentesque.
+
+## Statement of Reason
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum. Morbi posuere placerat ipsum, eu accumsan quam pulvinar a. Donec rutrum molestie dolor in maximus. Praesent fringilla enim vel ultricies lacinia. Phasellus at odio ut risus blandit consectetur. Pellentesque erat dui, scelerisque mollis aliquet id, aliquet at odio.
+
+## Exploratory Data Analysis
+
+### Data Dictionary
+
+```{r}
+#| label: Print Data Dictionary 
+
+py$var_list_df %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+
+```
+
+---
+
+### Data Preview
+
+```{r}
+#| label: Print Preview of Data
+
+py$heart_data %>%
+  head(n = 3) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+
+```
+
+---
+
+### Target Variable Distribution
+
+```{python}
+#| label: Target Variable Distribution
+
+had_heart_attack_distribution = (
+ggplot(heart_data, aes(x='HadHeartAttack', fill='HadHeartAttack')) + 
+  geom_bar(stat='count', position='dodge') + 
+  geom_text(aes(label='stat(count)'), stat='count', position=position_dodge(width=0.9), va='bottom', size=8)
+)
+
+print(had_heart_attack_distribution)
+
+```
+
+```{python}
+#| label: Target Variable Percent of Total
+
+class_counts = heart_data['HadHeartAttack'].value_counts()
+total_samples = len(heart_data)
+
+percentage_of_total = (class_counts / total_samples * 100).round(2)
+
+target_percent_total_df = pd.DataFrame({
+    'Count': class_counts.values,
+    'Percentage of Total': percentage_of_total.apply(lambda x: f"{x:.2f}%")
+})
+
+```
+
+---
+
+```{r}
+#| label: Print Percent of Total Table
+
+py$target_percent_total_df %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+
+```
+
+---
+
+### Predictor Variable Distributions
+
+```{python}
+#| label: State Distribution
+
+state_counts = heart_data.groupby('State').size().reset_index(name='Count')
+us_map = gpd.read_file("./Data/US_States_Map/US_States.shp")
+
+merged_data = us_map.merge(state_counts, left_on='NAME', right_on='State', how='left')
+
+fig, ax = plt.subplots(1, 1, figsize=(20, 15))
+ax.set_xlim([-130, -65])
+ax.set_ylim([24, 50])
+
+us_map.plot(ax=ax, edgecolor='k', linewidth=0.5, color='lightgrey')
+
+divider = make_axes_locatable(ax)
+cax = divider.append_axes("right", size="5%", pad=0.1)
+merged_data.plot(column='Count', cmap='YlOrRd', linewidth=0.8, ax=ax, edgecolor='0.8', legend=True, cax=cax)
+
+plt.title('Count Records\nby State')
+plt.show()
+
+```
+
+## Statistical Modeling
+
+## Conclusion 
+
+
+
+
+
+
 
