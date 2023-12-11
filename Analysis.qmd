@@ -213,6 +213,8 @@ ggplot(heart_data, aes(x='GeneralHealthOrdered', fill='GeneralHealthOrdered')) +
 
 print(general_health_distribution)
 
+heart_data = heart_data.drop('GeneralHealthOrdered', axis=1)
+
 ```
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis.
