@@ -1,0 +1,273 @@
+---
+title: "Heart Disease Key Indicators"
+author: "Joe Wilder, Justin Perkins"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+format:
+  html:
+    toc: true
+    toc-location: left
+editor: visual
+execute: 
+  warning: false
+  echo: false
+theme: darkly
+---
+
+
+```{r message=FALSE}
+library(tidyverse)
+library(reticulate)
+library(kableExtra)
+use_virtualenv("mat434")
+```
+
+
+```{python}
+from scipy.stats import randint
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+import matplotlib.gridspec as gridspec
+from matplotlib import pyplot
+import seaborn as sns
+import datetime as dt
+
+from sklearn.model_selection import train_test_split
+from plotnine import ggplot, aes, labs, geom_boxplot, geom_point, geom_histogram, geom_bar, geom_density, coord_flip, facet_grid, geom_jitter
+from sklearn.model_selection import train_test_split, cross_val_score, RandomizedSearchCV
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LogisticRegression
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
+
+```
+
+
+``` {python}
+
+heart_data = pd.read_csv('./Data/heart_2022_no_nans.csv')
+
+```
+
+
+
+### Data Cleaning
+
+A lot of our columns are represented with yes and no values. To avoid processing these columns as categorical variables, we can convert them to numerical by having 0 represent no, and 1 represent yes. This will be easier to understand for our model.
+
+```{python}
+
+boolean_columns = ['PhysicalActivities', 'HadHeartAttack', 'HadAngina', 'HadStroke', 'HadAsthma', 'HadSkinCancer', 'HadCOPD', 'HadDepressiveDisorder', 'HadKidneyDisease', 'HadArthritis', 'DeafOrHardOfHearing', 'BlindOrVisionDifficulty', 'DifficultyConcentrating', 'DifficultyWalking', 'DifficultyDressingBathing', 'DifficultyErrands', 'ChestScan', 'AlcoholDrinkers', 'HIVTesting', 'FluVaxLast12', 'PneumoVaxEver', 'HighRiskLastYear']
+
+for column in boolean_columns:
+    heart_data[column] = heart_data[column].map({'Yes': 1, 'No': 0})
+    
+    
+heart_data['GeneralHealth'] = heart_data['GeneralHealth'].map({'Poor': 0, 'Fair': 1, 'Good': 2, 'Very good': 3, 'Excellent': 4})
+
+```
+
+### Data Preprocessing
+
+To prepare our model for training, we need to split our data into train and test splits. The training data will be used for model construction and the test data will be used to evaluate our models.
+
+We also use stratification when we create our train test splits. While we do have a lot of data in our dataset, the majority of the data is for patients who have not had heart disease. By stratifying for the HadHeartAttack column, we ensure our model has plenty of data examples from patients who do have heart disease. This allows our model to better differentiate which patients have heart disease and which ones do not.
+
+```{python}
+train, test = train_test_split(heart_data, train_size = 0.1, random_state = 434, stratify = heart_data['HadHeartAttack'])
+
+X_train = train.drop(["HadHeartAttack"], axis = 1)
+y_train = train["HadHeartAttack"]
+X_test = test.drop(["HadHeartAttack"], axis = 1)
+y_test = test["HadHeartAttack"]
+
+```
+
+#print out columns here
+When building a model, we need to classify our columns as either numerical or categorical. This is because we process the data differently based on that. In our modeling pipeline, numerical variables need to be scaled and for categorical columns we need to use one hot encoding. Scaling is done to make it easier for our model to make distinctions between small distances. One hot encoding is done to map our categorical variables to numercial columns that our model can understand.
+
+```{python}
+
+# Separate columns into numerical and categorical
+num_cols = heart_data.select_dtypes(include='number').columns.tolist()
+num_cols.remove('HadHeartAttack')
+cat_cols = heart_data.select_dtypes(exclude='number').columns.tolist()
+
+```
+
+```{python}
+def build_pipeline(model):
+  num_pipe_rf = Pipeline([
+    ("num_imputer", SimpleImputer(strategy = "median")),
+    ("norm", StandardScaler())
+  ])
+  
+  cat_pipe = Pipeline([
+    ("cat_imputer", SimpleImputer(strategy = "most_frequent")),
+    ("one-hot", OneHotEncoder(handle_unknown="ignore"))
+  ])
+  
+  preprocessor_rf = ColumnTransformer([
+    ("num_cols", num_pipe_rf, num_cols),
+    ("cat_cols", cat_pipe, cat_cols)
+  ])
+  
+  pipe_rf = Pipeline([
+    ("preprocessor", preprocessor_rf),
+    ("model", model)
+  ])
+  return pipe_rf
+
+
+```
+
+
+### Base Model Construction
+
+There are many different models that we could use to make predictions on our dataset. To figure out which model we should use, we will build baseline models with minimal training and make predictions on our dataset. This will allow us to quantify which model we should use for our final predictions. 
+
+
+
+```{python}
+
+lr_clf = LogisticRegression(max_iter = 1000)
+rf_clf = RandomForestClassifier()
+dt_clf = DecisionTreeClassifier()
+lda_clf = LinearDiscriminantAnalysis()
+
+logistic_regression_pipe = build_pipeline(lr_clf)
+random_forest_pipe = build_pipeline(rf_clf)
+decision_tree_pipe = build_pipeline(dt_clf)
+linear_discriminant_analysis = build_pipeline(lda_clf)
+
+pipelines = [logistic_regression_pipe, random_forest_pipe, decision_tree_pipe, linear_discriminant_analysis]
+
+
+```
+Talk about param tuning here and what params we are using
+
+```{python}
+
+# Define hyperparameter grids for each model
+lr_param_grid = {
+    'model__C': [0.001, 0.01, 0.1, 1, 10],
+    'model__solver': ['newton-cg', 'lbfgs', 'liblinear', 'sag', 'saga'],
+    'model__max_iter': [500, 1000]
+}
+
+rf_param_dist = {
+    'model__n_estimators': randint(100, 200),
+    'model__max_depth': randint(8, 16),
+    'model__min_samples_split' : [2, 3, 4, 5],
+    'model__min_samples_leaf' : [1, 2, 3, 4]
+}
+
+dt_param_dist = {
+    'model__min_weight_fraction_leaf': [0.0, 0.1]
+}
+
+param_grid_lda = {
+    'model__priors': [None, [0.2, 0.8], [0.5, 0.5]],
+    'model__tol': [0.0001, 0.001, 0.01],
+}
+
+
+```
+
+
+Talk about random search here and print the params we get
+
+```{python}
+#| output: false
+
+# Define a list containing the hyperparameter grids
+param_grids = [lr_param_grid, rf_param_dist, dt_param_dist, param_grid_lda]
+
+# Perform RandomizedSearchCV for each pipeline
+best_models = []
+
+for i, pipeline in enumerate(pipelines):
+    print("Starting training")
+    param_dist = param_grids[i]
+    random_search = RandomizedSearchCV(
+        pipeline, param_distributions=param_dist, n_iter=1, cv=5, scoring='accuracy', n_jobs=-1, random_state=42
+    );
+    random_search.fit(X_train, y_train)
+    best_model = random_search.best_estimator_
+    best_models.append((pipeline.named_steps['model'].__class__.__name__, best_model))
+
+# Print the best models
+for model_name, best_model in best_models:
+    print(f"Best model for {model_name}: {best_model}")
+
+
+```
+
+Here we will now make predictions on our baseline models and decided which one we should train further. We chose to use accuracy as a prediction metric because our model is only predicting a boolean value. Because of this, we do not need anything more complicated than accuracy.
+
+```{python}
+
+for model_name, best_model in best_models:
+    cv_accuracy = cross_val_score(best_model, X_train, y_train, cv=10, scoring="accuracy")
+    print(f"Accuracy for {model_name}: {cv_accuracy.mean()}")
+
+```
+
+
+After trying all the models, it seems the Logistic Regression model has the best accuracy. Lets stick with that one and try to improve it.
+
+We do this by increasing the amount of iterations we train on and go over more params
+
+
+```{python}
+#| output: false
+
+
+# Updated hyperparameter grid for Logistic Regression
+lr_param_grid = {
+    'model__penalty': ['l2'],
+    'model__tol': [1e-4, 1e-3, 1e-2],
+    'model__C': [0.001, 0.01, 0.1, 1, 10, 100],
+    'model__fit_intercept': [True, False],
+    'model__intercept_scaling': [1, 2, 3],
+    'model__class_weight': [None, 'balanced'],
+    'model__solver': ['lbfgs', 'sag', 'saga'],
+    'model__max_iter': list(np.random.randint(100, 1000, 10)),
+    'model__multi_class': ['auto', 'ovr', 'multinomial'],
+}
+
+# Build the pipeline with Logistic Regression model
+lr_clf = LogisticRegression()
+logistic_regression_pipe = build_pipeline(lr_clf)
+
+random_search = RandomizedSearchCV(
+        logistic_regression_pipe, param_distributions=lr_param_grid, n_iter=1, cv=5, scoring='accuracy', n_jobs=-1,    random_state=42
+);
+
+random_search.fit(X_train, y_train)
+best_model = random_search.best_estimator_
+
+
+```
+
+Finally, we can make predictions on the final model
+
+```{python}
+
+# Evaluate the best model
+cv_accuracy = cross_val_score(best_model, X_train, y_train, cv=10, scoring="accuracy");
+print(f"Cross-validated Accuracy for Logistic Regression: {cv_accuracy.mean()}")
+
+
+```
+
+
+
