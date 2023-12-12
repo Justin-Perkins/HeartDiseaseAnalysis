@@ -13,16 +13,19 @@ execute:
 theme: darkly
 ---
 
+```{r}
+#| label: Reticulate
 
-```{r message=FALSE}
 library(tidyverse)
 library(reticulate)
 library(kableExtra)
 use_virtualenv("mat434")
+
 ```
 
-
 ```{python}
+#| label: Python Imports
+
 from scipy.stats import randint
 import pandas as pd
 import numpy as np
@@ -31,7 +34,10 @@ import matplotlib.patches as mpatches
 import matplotlib.gridspec as gridspec
 from matplotlib import pyplot
 import seaborn as sns
+import geopandas as gpd
 import datetime as dt
+
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from sklearn.model_selection import train_test_split
 from plotnine import ggplot, aes, labs, geom_boxplot, geom_point, geom_histogram, geom_bar, geom_density, coord_flip, facet_grid, geom_jitter
@@ -48,16 +54,224 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
+from scipy.stats import randint
+
+from shapely.geometry import Point
+from geopandas.tools import sjoin
+
+from plotnine import *
+
 ```
 
+```{python}
+#| label: Read in Data
 
-``` {python}
-
-heart_data = pd.read_csv('./Data/heart_2022_no_nans.csv')
+heart_data = pd.read_csv("./Data/Heart_Disease_Data.csv")
 
 ```
 
+```{python}
+#| label: Read in Column Descriptions
 
+var_list_df = pd.read_csv("./Data/Vars_With_Descriptions.txt", sep=' - ', header=None, names=['Variable', 'Description'])
+
+```
+
+## Background of Data Set
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum. Morbi posuere placerat ipsum, eu accumsan quam pulvinar a. Donec rutrum molestie dolor in maximus. Praesent fringilla enim vel ultricies lacinia. Phasellus at odio ut risus blandit consectetur. Pellentesque erat dui, scelerisque mollis aliquet id, aliquet at odio.
+
+Quisque a libero volutpat, convallis mauris cursus, volutpat purus. Nulla rhoncus eget dolor eget pretium. Maecenas finibus pulvinar rutrum. Nam malesuada malesuada mi sit amet commodo. Praesent sed sollicitudin tellus. Suspendisse ultrices sem ac erat pharetra, id tristique neque molestie. In luctus luctus nisi, id ornare nisl tempor non. In ante lectus, convallis nec sagittis eget, tincidunt fringilla lorem. Maecenas odio metus, hendrerit sit amet ligula a, semper suscipit metus. Nullam cursus urna non est faucibus, nec maximus erat mattis. Cras malesuada tortor laoreet dui viverra, id lacinia sapien finibus. Proin suscipit tortor aliquet urna imperdiet, ut commodo mauris imperdiet. Praesent tristique nunc in arcu hendrerit consequat. Donec quis nisl eget nisi dictum pellentesque.
+
+## Statement of Reason
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum. Morbi posuere placerat ipsum, eu accumsan quam pulvinar a. Donec rutrum molestie dolor in maximus. Praesent fringilla enim vel ultricies lacinia. Phasellus at odio ut risus blandit consectetur. Pellentesque erat dui, scelerisque mollis aliquet id, aliquet at odio.
+
+## Exploratory Data Analysis
+
+### Data Dictionary
+
+```{r}
+#| label: Print Data Dictionary 
+
+py$var_list_df %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+
+```
+
+------------------------------------------------------------------------
+
+### Data Preview
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum.
+
+```{r}
+#| label: Print Preview of Data
+
+py$heart_data %>%
+  head(n = 3) %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+
+```
+
+------------------------------------------------------------------------
+
+### Target Variable Distribution
+
+```{python}
+#| label: Target Variable Distribution
+
+had_heart_attack_distribution = (
+ggplot(heart_data, aes(x='HadHeartAttack', fill='HadHeartAttack')) + 
+  geom_bar(stat='count', position='dodge', show_legend = False) + 
+  geom_text(aes(label='stat(count)'), stat='count', position=position_dodge(width=0.9), va='bottom', size=8) +
+  labs(x='Had Heart Attack', y='Record Count', title='Distribution of Had Heart Attack') + 
+  theme(plot_title=element_text(hjust=0.5))
+)
+
+print(had_heart_attack_distribution)
+
+```
+
+```{python}
+#| label: Target Variable Percent of Total
+
+class_counts = heart_data['HadHeartAttack'].value_counts()
+total_samples = len(heart_data)
+
+percentage_of_total = (class_counts / total_samples * 100).round(2)
+
+target_percent_total_df = pd.DataFrame({
+    'Count': class_counts.values,
+    'Percentage of Total': percentage_of_total.apply(lambda x: f"{x:.2f}%")
+})
+
+```
+
+------------------------------------------------------------------------
+
+```{r}
+#| label: Print Percent of Total Table
+
+py$target_percent_total_df %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis.
+
+------------------------------------------------------------------------
+
+### Predictor Variable Distributions
+
+```{python}
+#| label: State Distribution
+
+state_counts = heart_data.groupby('State').size().reset_index(name='Count')
+us_map = gpd.read_file("./Data/US_States_Map/US_States.shp")
+
+merged_data = us_map.merge(state_counts, left_on='NAME', right_on='State', how='left')
+
+fig, ax = plt.subplots(1, 1, figsize=(20, 15))
+ax.set_xlim([-130, -65]);
+ax.set_ylim([24, 50]);
+
+us_map.plot(ax=ax, edgecolor='k', linewidth=0.5, color='lightgrey')
+
+divider = make_axes_locatable(ax)
+cax = divider.append_axes("right", size="5%", pad=0.1)
+merged_data.plot(column='Count', cmap='YlOrRd', linewidth=0.8, ax=ax, edgecolor='0.8', legend=True, cax=cax)
+
+plt.title('Count Records\nby State')
+plt.show()
+
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis.
+
+```{python}
+#| label: Change Order of General Health
+
+health_categories = ['Excellent', 'Very good', 'Good', 'Fair', 'Poor']
+heart_data['GeneralHealthOrdered'] = pd.Categorical(heart_data['GeneralHealth'], ordered=True, categories=health_categories)
+
+```
+
+```{python}
+#| label: General Health Distribution
+
+general_health_distribution = (
+ggplot(heart_data, aes(x='GeneralHealthOrdered', fill='GeneralHealthOrdered')) + 
+  geom_bar(stat='count', position='dodge', show_legend = False) + 
+  geom_text(aes(label='stat(count)'), stat='count', position=position_dodge(width=0.9), va='bottom', size=8) +
+  labs(x='General Health', y='Record Count', title='Distribution of General Health') + 
+  theme(plot_title=element_text(hjust=0.5))
+)
+
+print(general_health_distribution)
+
+heart_data = heart_data.drop('GeneralHealthOrdered', axis=1)
+
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis.
+
+```{python}
+#| label: BMI Distribution
+
+bmi_distribution = (
+  ggplot(heart_data, aes(x = 'BMI', fill = 'HadHeartAttack')) + 
+  geom_histogram() +
+  labs(x='BMI', y='Record Count', title='Distribution of BMI by HadHeartAttack') +
+  theme(plot_title=element_text(hjust=0.5))
+)
+
+print(bmi_distribution)
+
+```
+
+```{python}
+#| label: Calculate BMI Summary Statistics
+
+bmi_average_yes_heart_attack = heart_data.query('HadHeartAttack == "Yes"').BMI.mean()
+bmi_average_no_heart_attack = heart_data.query('HadHeartAttack == "No"').BMI.mean()
+bmi_average = heart_data.BMI.mean()
+
+bmi_std_yes_heart_attack = heart_data.query('HadHeartAttack == "Yes"').BMI.std()
+bmi_std_no_heart_attack = heart_data.query('HadHeartAttack == "No"').BMI.std()
+bmi_std = heart_data.BMI.std()
+
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum.
+
+### Kurtosis For Numeric columns
+
+```{python}
+#| label: Calculate Kurtosis for Numerical Columns
+
+heart_data_kurtosis = heart_data.kurt(axis=0, numeric_only=True)
+heart_data_kurtosis.rename(index={'x': 'Kurtosis'}, inplace=True)
+
+```
+
+```{r}
+#| label: Print Kurtosis Table
+
+py$heart_data_kurtosis %>%
+  kable() %>%
+  kable_styling(bootstrap_options = c("hover", "striped"))
+
+```
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum.
+
+------------------------------------------------------------------------
+
+## Statistical Modeling
 
 ### Data Cleaning
 
@@ -79,7 +293,7 @@ heart_data['GeneralHealth'] = heart_data['GeneralHealth'].map({'Poor': 0, 'Fair'
 
 To prepare our model for training, we need to split our data into train and test splits. The training data will be used for model construction and the test data will be used to evaluate our models.
 
-We also use stratification when we create our train test splits. While we do have a lot of data in our dataset, the majority of the data is for patients who have not had heart disease. By stratifying for the HadHeartAttack column, we ensure our model has plenty of data examples from patients who do have heart disease. This allows our model to better differentiate which patients have heart disease and which ones do not.
+We also use stratification when we create our train test splits. While we do have a lot of data in our data set, the majority of the data is for patients who have not had heart disease. By stratifying for the HadHeartAttack column, we ensure our model has plenty of data examples from patients who do have heart disease. This allows our model to better differentiate which patients have heart disease and which ones do not.
 
 ```{python}
 train, test = train_test_split(heart_data, train_size = 0.1, random_state = 434, stratify = heart_data['HadHeartAttack'])
@@ -91,7 +305,6 @@ y_test = test["HadHeartAttack"]
 
 ```
 
-#print out columns here
 When building a model, we need to classify our columns as either numerical or categorical. This is because we process the data differently based on that. In our modeling pipeline, numerical variables need to be scaled and for categorical columns we need to use one hot encoding. Scaling is done to make it easier for our model to make distinctions between small distances. One hot encoding is done to map our categorical variables to numercial columns that our model can understand.
 
 ```{python}
@@ -101,7 +314,19 @@ num_cols = heart_data.select_dtypes(include='number').columns.tolist()
 num_cols.remove('HadHeartAttack')
 cat_cols = heart_data.select_dtypes(exclude='number').columns.tolist()
 
+
+# Print numerical columns
+print("#### Numerical Columns")
+for col in num_cols:
+    print(f"* {col}")
+
+# Print categorical columns
+print("\n#### Categorical Columns")
+for col in cat_cols:
+    print(f"* {col}")
+
 ```
+
 
 ```{python}
 def build_pipeline(model):
@@ -129,12 +354,11 @@ def build_pipeline(model):
 
 ```
 
-
 ### Base Model Construction
 
-There are many different models that we could use to make predictions on our dataset. To figure out which model we should use, we will build baseline models with minimal training and make predictions on our dataset. This will allow us to quantify which model we should use for our final predictions. 
+There are many different models that we could use to make predictions on our data set. To figure out which model we should use, we will build baseline models with minimal training and make predictions on our data set. This will allow us to quantify which model we should use for our final predictions.
 
-
+The models we have chosen to test is the logistic regression model, the random forest classifier, the decision tree classifier, and the linear discriminant analysis model. All of these models can be used to make predictions that classify if a patient has heart disease or not. It is also important to do some basic parameter training on our models to help us identify which model might perform best. Each model has a unique parameter grid that we will train over.
 
 ```{python}
 
@@ -152,7 +376,8 @@ pipelines = [logistic_regression_pipe, random_forest_pipe, decision_tree_pipe, l
 
 
 ```
-Talk about param tuning here and what params we are using
+
+
 
 ```{python}
 
@@ -182,8 +407,7 @@ param_grid_lda = {
 
 ```
 
-
-Talk about random search here and print the params we get
+Once we have our parameter grids, we can feed them into a random search. The random search function is what will train out model. It allows us to go through and train many different models using the different combinations of parameters we have defined in our parameter grids. The output we get is the best parameter combination that was found in the training session for each model we have defined.
 
 ```{python}
 #| output: false
@@ -195,7 +419,6 @@ param_grids = [lr_param_grid, rf_param_dist, dt_param_dist, param_grid_lda]
 best_models = []
 
 for i, pipeline in enumerate(pipelines):
-    print("Starting training")
     param_dist = param_grids[i]
     random_search = RandomizedSearchCV(
         pipeline, param_distributions=param_dist, n_iter=1, cv=5, scoring='accuracy', n_jobs=-1, random_state=42
@@ -203,6 +426,7 @@ for i, pipeline in enumerate(pipelines):
     random_search.fit(X_train, y_train)
     best_model = random_search.best_estimator_
     best_models.append((pipeline.named_steps['model'].__class__.__name__, best_model))
+      
 
 # Print the best models
 for model_name, best_model in best_models:
@@ -215,17 +439,17 @@ Here we will now make predictions on our baseline models and decided which one w
 
 ```{python}
 
+
+
 for model_name, best_model in best_models:
     cv_accuracy = cross_val_score(best_model, X_train, y_train, cv=10, scoring="accuracy")
     print(f"Accuracy for {model_name}: {cv_accuracy.mean()}")
 
 ```
 
-
 After trying all the models, it seems the Logistic Regression model has the best accuracy. Lets stick with that one and try to improve it.
 
 We do this by increasing the amount of iterations we train on and go over more params
-
 
 ```{python}
 #| output: false
@@ -265,9 +489,11 @@ Finally, we can make predictions on the final model
 # Evaluate the best model
 cv_accuracy = cross_val_score(best_model, X_train, y_train, cv=10, scoring="accuracy");
 print(f"Cross-validated Accuracy for Logistic Regression: {cv_accuracy.mean()}")
+mean_accuracy = cv_accuracy.mean()
 
 
 ```
 
+## Conclusion
 
-
+Through the use of our data set, we were able to accomplish the creation of a model with an accuracy of `r py$mean_accuracy`. This allows us to be able to make predictions on whether someone has heart disease or not. We were able to do this through the use of data visualization, data cleaning,  baseline model construction, and hyperparameter tuning.
