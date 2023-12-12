@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.3.353">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -36,9 +36,6 @@ ul.task-list li input[type="checkbox"] {
 <link href="Analysis_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="Analysis_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
 
-<script src="Analysis_files/libs/kePrint-0.0.1/kePrint.js"></script>
-<link href="Analysis_files/libs/lightable-0.0.1/lightable.css" rel="stylesheet">
-
 
 </head>
 
@@ -50,23 +47,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#background-of-dataset" id="toc-background-of-dataset" class="nav-link active" data-scroll-target="#background-of-dataset">Background of Dataset</a></li>
-  <li><a href="#statement-of-reason" id="toc-statement-of-reason" class="nav-link" data-scroll-target="#statement-of-reason">Statement of Reason</a></li>
-  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">Exploratory Data Analysis</a>
-  <ul class="collapse">
-  <li><a href="#data-dictionary" id="toc-data-dictionary" class="nav-link" data-scroll-target="#data-dictionary">Data Dictionary</a></li>
-  <li><a href="#data-preview" id="toc-data-preview" class="nav-link" data-scroll-target="#data-preview">Data Preview</a></li>
-  <li><a href="#target-variable-distribution" id="toc-target-variable-distribution" class="nav-link" data-scroll-target="#target-variable-distribution">Target Variable Distribution</a></li>
-  <li><a href="#predictor-variable-distributions" id="toc-predictor-variable-distributions" class="nav-link" data-scroll-target="#predictor-variable-distributions">Predictor Variable Distributions</a></li>
-  <li><a href="#kurtosis-for-numeric-columns" id="toc-kurtosis-for-numeric-columns" class="nav-link" data-scroll-target="#kurtosis-for-numeric-columns">Kurtosis For Numeric columns</a></li>
-  </ul></li>
-  <li><a href="#statistical-modeling" id="toc-statistical-modeling" class="nav-link" data-scroll-target="#statistical-modeling">Statistical Modeling</a>
-  <ul class="collapse">
-  <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link" data-scroll-target="#data-cleaning">Data Cleaning</a></li>
+  <li><a href="#data-cleaning" id="toc-data-cleaning" class="nav-link active" data-scroll-target="#data-cleaning">Data Cleaning</a></li>
   <li><a href="#data-preprocessing" id="toc-data-preprocessing" class="nav-link" data-scroll-target="#data-preprocessing">Data Preprocessing</a></li>
   <li><a href="#base-model-construction" id="toc-base-model-construction" class="nav-link" data-scroll-target="#base-model-construction">Base Model Construction</a></li>
-  </ul></li>
-  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul>
 </nav>
 </div>
@@ -103,489 +86,6 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="background-of-dataset" class="level2">
-<h2 class="anchored" data-anchor-id="background-of-dataset">Background of Dataset</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum. Morbi posuere placerat ipsum, eu accumsan quam pulvinar a. Donec rutrum molestie dolor in maximus. Praesent fringilla enim vel ultricies lacinia. Phasellus at odio ut risus blandit consectetur. Pellentesque erat dui, scelerisque mollis aliquet id, aliquet at odio.</p>
-<p>Quisque a libero volutpat, convallis mauris cursus, volutpat purus. Nulla rhoncus eget dolor eget pretium. Maecenas finibus pulvinar rutrum. Nam malesuada malesuada mi sit amet commodo. Praesent sed sollicitudin tellus. Suspendisse ultrices sem ac erat pharetra, id tristique neque molestie. In luctus luctus nisi, id ornare nisl tempor non. In ante lectus, convallis nec sagittis eget, tincidunt fringilla lorem. Maecenas odio metus, hendrerit sit amet ligula a, semper suscipit metus. Nullam cursus urna non est faucibus, nec maximus erat mattis. Cras malesuada tortor laoreet dui viverra, id lacinia sapien finibus. Proin suscipit tortor aliquet urna imperdiet, ut commodo mauris imperdiet. Praesent tristique nunc in arcu hendrerit consequat. Donec quis nisl eget nisi dictum pellentesque.</p>
-</section>
-<section id="statement-of-reason" class="level2">
-<h2 class="anchored" data-anchor-id="statement-of-reason">Statement of Reason</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum. Morbi posuere placerat ipsum, eu accumsan quam pulvinar a. Donec rutrum molestie dolor in maximus. Praesent fringilla enim vel ultricies lacinia. Phasellus at odio ut risus blandit consectetur. Pellentesque erat dui, scelerisque mollis aliquet id, aliquet at odio.</p>
-</section>
-<section id="exploratory-data-analysis" class="level2">
-<h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory Data Analysis</h2>
-<section id="data-dictionary" class="level3">
-<h3 class="anchored" data-anchor-id="data-dictionary">Data Dictionary</h3>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table table-hover table-striped table-sm small" data-quarto-postprocess="true">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">Variable</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">State</td>
-<td style="text-align: left;">State FIPS Code</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Sex</td>
-<td style="text-align: left;">Sex of Respondent</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">GeneralHealth</td>
-<td style="text-align: left;">Would you say that in general your health is:</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">PhysicalHealthDays</td>
-<td style="text-align: left;">Now thinking about your physical health, which includes physical illness and injury, for how many days during the past 30 days was your physical health not good?</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">MentalHealthDays</td>
-<td style="text-align: left;">Now thinking about your mental health, which includes stress, depression, and problems with emotions, for how many days during the past 30 days was your mental health not good?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">LastCheckupTime</td>
-<td style="text-align: left;">About how long has it been since you last visited a doctor for a routine checkup?</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">PhysicalActivities</td>
-<td style="text-align: left;">During the past month, other than your regular job, did you participate in any physical activities or exercises such as running, calisthenics, golf, gardening, or walking for exercise?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">SleepHours</td>
-<td style="text-align: left;">On average, how many hours of sleep do you get in a 24-hour period?</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">RemovedTeeth</td>
-<td style="text-align: left;">Not including teeth lost for injury or orthodontics, how many of your permanent teeth have been removed because of tooth decay or gum disease?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">HadHeartAttack</td>
-<td style="text-align: left;">(Ever told) you had a heart attack, also called a myocardial infarction?</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">HadAngina</td>
-<td style="text-align: left;">(Ever told) (you had) angina or coronary heart disease?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">HadStroke</td>
-<td style="text-align: left;">(Ever told) (you had) a stroke.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">HadAsthma</td>
-<td style="text-align: left;">(Ever told) (you had) asthma?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">HadSkinCancer</td>
-<td style="text-align: left;">(Ever told) (you had) skin cancer that is not melanoma?</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">HadCOPD</td>
-<td style="text-align: left;">(Ever told) (you had) C.O.P.D. (chronic obstructive pulmonary disease), emphysema or chronic bronchitis?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">HadDepressiveDisorder</td>
-<td style="text-align: left;">(Ever told) (you had) a depressive disorder (including depression, major depression, dysthymia, or minor depression)?</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">HadKidneyDisease</td>
-<td style="text-align: left;">Not including kidney stones, bladder infection or incontinence, were you ever told you had kidney disease?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">HadArthritis</td>
-<td style="text-align: left;">(Ever told) (you had) some form of arthritis, rheumatoid arthritis, gout, lupus, or fibromyalgia? (Arthritis diagnoses include: rheumatism, polymyalgia rheumatica; osteoarthritis (not osteporosis); tendonitis, bursitis, bunion, tennis elbow; carpal tunnel syndrome, tarsal tunnel syndrome; joint infection, etc.)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">HadDiabetes</td>
-<td style="text-align: left;">(Ever told) (you had) diabetes?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">DeafOrHardOfHearing</td>
-<td style="text-align: left;">Are you deaf or do you have serious difficulty hearing?</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">BlindOrVisionDifficulty</td>
-<td style="text-align: left;">Are you blind or do you have serious difficulty seeing, even when wearing glasses?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">DifficultyConcentrating</td>
-<td style="text-align: left;">Because of a physical, mental, or emotional condition, do you have serious difficulty concentrating, remembering, or making decisions?</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">DifficultyWalking</td>
-<td style="text-align: left;">Do you have serious difficulty walking or climbing stairs?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">DifficultyDressingBathing</td>
-<td style="text-align: left;">Do you have difficulty dressing or bathing?</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">DifficultyErrands</td>
-<td style="text-align: left;">Because of a physical, mental, or emotional condition, do you have difficulty doing errands alone such as visiting a doctor´s office or shopping?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">SmokerStatus</td>
-<td style="text-align: left;">Four-level smoker status: Everyday smoker, Someday smoker, Former smoker, Non-smoker</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">ECigaretteUsage</td>
-<td style="text-align: left;">Would you say you have never used e-cigarettes or other electronic vaping products in your entire life or now use them every day, use them some days, or used them in the past but do not currently use them at all?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">ChestScan</td>
-<td style="text-align: left;">Have you ever had a CT or CAT scan of your chest area?</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">RaceEthnicityCategory</td>
-<td style="text-align: left;">Five-level race/ethnicity category</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">AgeCategory</td>
-<td style="text-align: left;">Fourteen-level age category</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">HeightInMeters</td>
-<td style="text-align: left;">Reported height in meters</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">WeightInKilograms</td>
-<td style="text-align: left;">Reported weight in kilograms</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">BMI</td>
-<td style="text-align: left;">Body Mass Index (BMI)</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">AlcoholDrinkers</td>
-<td style="text-align: left;">Adults who reported having had at least one drink of alcohol in the past 30 days.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">HIVTesting</td>
-<td style="text-align: left;">Adults who have ever been tested for HIV</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">FluVaxLast12</td>
-<td style="text-align: left;">During the past 12 months, have you had either flu vaccine that was sprayed in your nose or flu shot injected into your arm?</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">PneumoVaxEver</td>
-<td style="text-align: left;">Have you ever had a pneumonia shot also known as a pneumococcal vaccine?</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">TetanusLast10Tdap</td>
-<td style="text-align: left;">Have you received a tetanus shot in the past 10 years? Was this Tdap, the tetanus shot that also has pertussis or whooping cough vaccine?</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">HighRiskLastYear</td>
-<td style="text-align: left;">You have injected any drug other than those prescribed for you in the past year. You have been treated for a sexually transmitted disease or STD in the past year. You have given or received money or drugs in exchange for sex in the past year.</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">CovidPos</td>
-<td style="text-align: left;">Has a doctor, nurse, or other health professional ever told you that you tested positive for COVID 19?</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
-</div>
-<hr>
-</section>
-<section id="data-preview" class="level3">
-<h3 class="anchored" data-anchor-id="data-preview">Data Preview</h3>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum.</p>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table table-hover table-striped table-sm small" data-quarto-postprocess="true">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">State</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Sex</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">GeneralHealth</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">PhysicalHealthDays</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">MentalHealthDays</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">LastCheckupTime</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">PhysicalActivities</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">SleepHours</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">RemovedTeeth</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">HadHeartAttack</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">HadAngina</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">HadStroke</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">HadAsthma</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">HadSkinCancer</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">HadCOPD</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">HadDepressiveDisorder</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">HadKidneyDisease</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">HadArthritis</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">HadDiabetes</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">DeafOrHardOfHearing</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">BlindOrVisionDifficulty</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">DifficultyConcentrating</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">DifficultyWalking</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">DifficultyDressingBathing</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">DifficultyErrands</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">SmokerStatus</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">ECigaretteUsage</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">ChestScan</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">RaceEthnicityCategory</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">AgeCategory</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">HeightInMeters</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">WeightInKilograms</th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">BMI</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">AlcoholDrinkers</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">HIVTesting</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">FluVaxLast12</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">PneumoVaxEver</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">TetanusLast10Tdap</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">HighRiskLastYear</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">CovidPos</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">Alabama</td>
-<td style="text-align: left;">Female</td>
-<td style="text-align: left;">Very good</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: left;">Within past year (anytime less than 12 months ago)</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: right;">9</td>
-<td style="text-align: left;">None of them</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Former smoker</td>
-<td style="text-align: left;">Never used e-cigarettes in my entire life</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">White only, Non-Hispanic</td>
-<td style="text-align: left;">Age 65 to 69</td>
-<td style="text-align: right;">1.60</td>
-<td style="text-align: right;">71.67</td>
-<td style="text-align: right;">27.99</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Yes, received Tdap</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Alabama</td>
-<td style="text-align: left;">Male</td>
-<td style="text-align: left;">Very good</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: left;">Within past year (anytime less than 12 months ago)</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: left;">None of them</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Former smoker</td>
-<td style="text-align: left;">Never used e-cigarettes in my entire life</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">White only, Non-Hispanic</td>
-<td style="text-align: left;">Age 70 to 74</td>
-<td style="text-align: right;">1.78</td>
-<td style="text-align: right;">95.25</td>
-<td style="text-align: right;">30.13</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">Yes, received tetanus shot but not sure what type</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Alabama</td>
-<td style="text-align: left;">Male</td>
-<td style="text-align: left;">Very good</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: left;">Within past year (anytime less than 12 months ago)</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: right;">8</td>
-<td style="text-align: left;">6 or more, but not all</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Former smoker</td>
-<td style="text-align: left;">Never used e-cigarettes in my entire life</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">White only, Non-Hispanic</td>
-<td style="text-align: left;">Age 75 to 79</td>
-<td style="text-align: right;">1.85</td>
-<td style="text-align: right;">108.86</td>
-<td style="text-align: right;">31.66</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-<td style="text-align: left;">No, did not receive any tetanus shot in the past 10 years</td>
-<td style="text-align: left;">No</td>
-<td style="text-align: left;">Yes</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
-</div>
-<hr>
-</section>
-<section id="target-variable-distribution" class="level3">
-<h3 class="anchored" data-anchor-id="target-variable-distribution">Target Variable Distribution</h3>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="Analysis_files/figure-html/Target%20Variable%20Distribution-1.png" class="img-fluid" width="614"></p>
-</div>
-</div>
-<hr>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table table-hover table-striped table-sm small" data-quarto-postprocess="true">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">Count</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Percentage of Total</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">No</td>
-<td style="text-align: right;">232587</td>
-<td style="text-align: left;">94.54%</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Yes</td>
-<td style="text-align: right;">13435</td>
-<td style="text-align: left;">5.46%</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
-</div>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis.</p>
-<hr>
-</section>
-<section id="predictor-variable-distributions" class="level3">
-<h3 class="anchored" data-anchor-id="predictor-variable-distributions">Predictor Variable Distributions</h3>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="Analysis_files/figure-html/State%20Distribution-1.png" class="img-fluid" width="1920"></p>
-</div>
-</div>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis.</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="Analysis_files/figure-html/General%20Health%20Distribution-3.png" class="img-fluid" width="614"></p>
-</div>
-</div>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis.</p>
-<div class="cell">
-<div class="cell-output-display">
-<p><img src="Analysis_files/figure-html/BMI%20Distribution-5.png" class="img-fluid" width="614"></p>
-</div>
-</div>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum.</p>
-</section>
-<section id="kurtosis-for-numeric-columns" class="level3">
-<h3 class="anchored" data-anchor-id="kurtosis-for-numeric-columns">Kurtosis For Numeric columns</h3>
-<div class="cell">
-<div class="cell-output-display">
-<table class="table table-hover table-striped table-sm small" data-quarto-postprocess="true">
-<thead>
-<tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
-<th style="text-align: right;" data-quarto-table-cell-role="th">x</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">PhysicalHealthDays</td>
-<td style="text-align: right;">3.9728649</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">MentalHealthDays</td>
-<td style="text-align: right;">3.8587287</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">SleepHours</td>
-<td style="text-align: right;">7.2068297</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">HeightInMeters</td>
-<td style="text-align: right;">0.0073723</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">WeightInKilograms</td>
-<td style="text-align: right;">2.3372781</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">BMI</td>
-<td style="text-align: right;">3.8980498</td>
-</tr>
-</tbody>
-</table>
-
-
-</div>
-</div>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum.</p>
-<hr>
-</section>
-</section>
-<section id="statistical-modeling" class="level2">
-<h2 class="anchored" data-anchor-id="statistical-modeling">Statistical Modeling</h2>
 <section id="data-cleaning" class="level3">
 <h3 class="anchored" data-anchor-id="data-cleaning">Data Cleaning</h3>
 <p>A lot of our columns are represented with yes and no values. To avoid processing these columns as categorical variables, we can convert them to numerical by having 0 represent no, and 1 represent yes. This will be easier to understand for our model.</p>
@@ -728,7 +228,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell">
 <div class="cell-output cell-output-stdout">
 <pre><code>Accuracy for LogisticRegression: 0.9482967463156953
-Accuracy for RandomForestClassifier: 0.9452890456982586
+Accuracy for RandomForestClassifier: 0.9455735655081053
 Accuracy for DecisionTreeClassifier: 0.945410963882089
 Accuracy for LinearDiscriminantAnalysis: 0.932241025031136</code></pre>
 </div>
@@ -758,9 +258,9 @@ Accuracy for LinearDiscriminantAnalysis: 0.932241025031136</code></pre>
                                                                 'balanced'],
                                         'model__fit_intercept': [True, False],
                                         'model__intercept_scaling': [1, 2, 3],
-                                        'model__max_iter': [990, 529, 118, 537,
-                                                            768, 329, 325, 147,
-                                                            228, 805],
+                                        'model__max_iter': [968, 182, 691, 258,
+                                                            904, 974, 726, 833,
+                                                            631, 697],
                                         'model__multi_class': ['auto', 'ovr',
                                                                'multinomial'],
                                         'model__penalty': ['l2'],
@@ -788,9 +288,9 @@ Accuracy for LinearDiscriminantAnalysis: 0.932241025031136</code></pre>
                                                                 'balanced'],
                                         'model__fit_intercept': [True, False],
                                         'model__intercept_scaling': [1, 2, 3],
-                                        'model__max_iter': [990, 529, 118, 537,
-                                                            768, 329, 325, 147,
-                                                            228, 805],
+                                        'model__max_iter': [968, 182, 691, 258,
+                                                            904, 974, 726, 833,
+                                                            631, 697],
                                         'model__multi_class': ['auto', 'ovr',
                                                                'multinomial'],
                                         'model__penalty': ['l2'],
@@ -855,13 +355,9 @@ Accuracy for LinearDiscriminantAnalysis: 0.932241025031136</code></pre>
 <p>Finally, we can make predictions on the final model</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>Cross-validated Accuracy for Logistic Regression: 0.8276967687799592</code></pre>
+<pre><code>Cross-validated Accuracy for Logistic Regression: 0.8276154679669512</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="conclusion" class="level2">
-<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 </section>
 
 </main>

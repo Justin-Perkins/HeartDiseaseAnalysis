@@ -77,7 +77,7 @@ var_list_df = pd.read_csv("./Data/Vars_With_Descriptions.txt", sep=' - ', header
 
 ```
 
-## Background of Dataset
+## Background of Data Set
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel mauris a metus malesuada pharetra eu quis ligula. Cras elementum orci id mollis porttitor. Quisque porttitor tempus felis. Donec sit amet augue ac est blandit viverra. Vivamus aliquam nec mauris et laoreet. Quisque fringilla sed risus id aliquet. Aenean sit amet tristique eros, vitae congue ipsum. Morbi posuere placerat ipsum, eu accumsan quam pulvinar a. Donec rutrum molestie dolor in maximus. Praesent fringilla enim vel ultricies lacinia. Phasellus at odio ut risus blandit consectetur. Pellentesque erat dui, scelerisque mollis aliquet id, aliquet at odio.
 
@@ -293,7 +293,7 @@ heart_data['GeneralHealth'] = heart_data['GeneralHealth'].map({'Poor': 0, 'Fair'
 
 To prepare our model for training, we need to split our data into train and test splits. The training data will be used for model construction and the test data will be used to evaluate our models.
 
-We also use stratification when we create our train test splits. While we do have a lot of data in our dataset, the majority of the data is for patients who have not had heart disease. By stratifying for the HadHeartAttack column, we ensure our model has plenty of data examples from patients who do have heart disease. This allows our model to better differentiate which patients have heart disease and which ones do not.
+We also use stratification when we create our train test splits. While we do have a lot of data in our data set, the majority of the data is for patients who have not had heart disease. By stratifying for the HadHeartAttack column, we ensure our model has plenty of data examples from patients who do have heart disease. This allows our model to better differentiate which patients have heart disease and which ones do not.
 
 ```{python}
 train, test = train_test_split(heart_data, train_size = 0.1, random_state = 434, stratify = heart_data['HadHeartAttack'])
@@ -305,7 +305,7 @@ y_test = test["HadHeartAttack"]
 
 ```
 
-#print out columns here When building a model, we need to classify our columns as either numerical or categorical. This is because we process the data differently based on that. In our modeling pipeline, numerical variables need to be scaled and for categorical columns we need to use one hot encoding. Scaling is done to make it easier for our model to make distinctions between small distances. One hot encoding is done to map our categorical variables to numercial columns that our model can understand.
+When building a model, we need to classify our columns as either numerical or categorical. This is because we process the data differently based on that. In our modeling pipeline, numerical variables need to be scaled and for categorical columns we need to use one hot encoding. Scaling is done to make it easier for our model to make distinctions between small distances. One hot encoding is done to map our categorical variables to numercial columns that our model can understand.
 
 ```{python}
 
@@ -314,7 +314,19 @@ num_cols = heart_data.select_dtypes(include='number').columns.tolist()
 num_cols.remove('HadHeartAttack')
 cat_cols = heart_data.select_dtypes(exclude='number').columns.tolist()
 
+
+# Print numerical columns
+print("#### Numerical Columns")
+for col in num_cols:
+    print(f"* {col}")
+
+# Print categorical columns
+print("\n#### Categorical Columns")
+for col in cat_cols:
+    print(f"* {col}")
+
 ```
+
 
 ```{python}
 def build_pipeline(model):
@@ -344,7 +356,9 @@ def build_pipeline(model):
 
 ### Base Model Construction
 
-There are many different models that we could use to make predictions on our dataset. To figure out which model we should use, we will build baseline models with minimal training and make predictions on our dataset. This will allow us to quantify which model we should use for our final predictions.
+There are many different models that we could use to make predictions on our data set. To figure out which model we should use, we will build baseline models with minimal training and make predictions on our data set. This will allow us to quantify which model we should use for our final predictions.
+
+The models we have chosen to test is the logistic regression model, the random forest classifier, the decision tree classifier, and the linear discriminant analysis model. All of these models can be used to make predictions that classify if a patient has heart disease or not. It is also important to do some basic parameter training on our models to help us identify which model might perform best. Each model has a unique parameter grid that we will train over.
 
 ```{python}
 
@@ -363,7 +377,7 @@ pipelines = [logistic_regression_pipe, random_forest_pipe, decision_tree_pipe, l
 
 ```
 
-Talk about param tuning here and what params we are using
+
 
 ```{python}
 
@@ -393,7 +407,7 @@ param_grid_lda = {
 
 ```
 
-Talk about random search here and print the params we get
+Once we have our parameter grids, we can feed them into a random search. The random search function is what will train out model. It allows us to go through and train many different models using the different combinations of parameters we have defined in our parameter grids. The output we get is the best parameter combination that was found in the training session for each model we have defined.
 
 ```{python}
 #| output: false
@@ -405,7 +419,6 @@ param_grids = [lr_param_grid, rf_param_dist, dt_param_dist, param_grid_lda]
 best_models = []
 
 for i, pipeline in enumerate(pipelines):
-    print("Starting training")
     param_dist = param_grids[i]
     random_search = RandomizedSearchCV(
         pipeline, param_distributions=param_dist, n_iter=1, cv=5, scoring='accuracy', n_jobs=-1, random_state=42
@@ -413,6 +426,7 @@ for i, pipeline in enumerate(pipelines):
     random_search.fit(X_train, y_train)
     best_model = random_search.best_estimator_
     best_models.append((pipeline.named_steps['model'].__class__.__name__, best_model))
+      
 
 # Print the best models
 for model_name, best_model in best_models:
@@ -424,6 +438,8 @@ for model_name, best_model in best_models:
 Here we will now make predictions on our baseline models and decided which one we should train further. We chose to use accuracy as a prediction metric because our model is only predicting a boolean value. Because of this, we do not need anything more complicated than accuracy.
 
 ```{python}
+
+
 
 for model_name, best_model in best_models:
     cv_accuracy = cross_val_score(best_model, X_train, y_train, cv=10, scoring="accuracy")
@@ -473,8 +489,11 @@ Finally, we can make predictions on the final model
 # Evaluate the best model
 cv_accuracy = cross_val_score(best_model, X_train, y_train, cv=10, scoring="accuracy");
 print(f"Cross-validated Accuracy for Logistic Regression: {cv_accuracy.mean()}")
+mean_accuracy = cv_accuracy.mean()
 
 
 ```
 
 ## Conclusion
+
+Through the use of our data set, we were able to accomplish the creation of a model with an accuracy of `r py$mean_accuracy`. This allows us to be able to make predictions on whether someone has heart disease or not. We were able to do this through the use of data visualization, data cleaning,  baseline model construction, and hyperparameter tuning.
